@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('passwrod')->nullable();
             $table->string('contact_no');
             $table->text('message');
+            $table->enum('status', ['pending', 'approved', 'rejected' ])->default('pending');
+            $table->rememberToken();
             $table->timestamps();
         });
     }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Admin;
+use App\Models\Dokan;
 use App\Models\User;
 
 return [
@@ -47,6 +48,10 @@ return [
             'driver' => 'session',
             'provider' => 'admins',
         ],
+        'dokan' => [
+            'driver' => 'session',
+            'provider' => 'dokans',
+        ]
     ],
 
     /*
@@ -75,6 +80,10 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', Admin::class),
         ],
+        'dokans' => [
+            'driver' => 'eloquent',
+            'model' => env('AUTH_MODEL', Dokan::class),
+        ]
 
         // 'users' => [
         //     'driver' => 'database',

@@ -23,15 +23,24 @@ class EditDokan extends EditRecord
 
     #[Override]
     protected function mutateFormDataBeforeSave(array $data): array
-    {
-        if($data["status"] == 'approved'){
-            // dd($data);
-            $password = rand(10000, 99999 );
-            $data["password"] = Hash::make($password);
-            // dd($data);
-            Mail::to($data['email'])->send(new DokanCredential($data, $password));
-        }
-        
-        return parent::mutateFormDataBeforeSave($data);
+{
+    // Current record from database
+    $record = $this->record;
+
+    // Check if status changed to approved
+    if (
+        $record->status !== 'approved' &&
+        $data['status'] === 'approved'
+    ) {
+
+        $password = rand(10000, 99999);
+
+        $data['password'] = Hash::make($password);
+
+        Mail::to($data['email'])
+            ->send(new DokanCredential($data, $password));
     }
+
+    return $data;
+}
 }

@@ -7,10 +7,9 @@
 
       <!-- Navigation links (Home, Categories, Shop, Deals, About, Contact) -->
       <ul class="nav-links">
-        <li><a href="#"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="#"><i class="fas fa-th-large"></i> Categories</a></li>
-        <li><a href="#"><i class="fas fa-store"></i> Shop</a></li>
-        <li><a href="#"><i class="fas fa-tags"></i> Deals</a></li>
+        <li><a href="{{route('home')}}"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="{{route('products')}}"><i class="fas fa-store"></i> Shop</a></li>
+        <li><a href="{{route('deals')}}"><i class="fas fa-tags"></i> Deals</a></li>
         <li><a href="#"><i class="fas fa-info-circle"></i> About</a></li>
         <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
       </ul>

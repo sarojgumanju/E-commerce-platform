@@ -77,5 +77,93 @@
         </div>
       </form>
     </div>
+
+
+    <!-- Product Card (form) -->
+    <section class="py-12">
+        <div class="container mx-auto px-4">
+
+          <!-- Heading -->
+          <div class="text-center mb-10">
+            <h2 class="text-3xl font-extrabold text-slate-900">
+              Latest Products
+            </h2>
+            <div class="w-16 h-1 bg-orange-500 mx-auto my-3 rounded"></div>
+            <p class="text-slate-500">
+              Discover our newest arrivals
+            </p>
+          </div>
+
+          <!-- Product Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            @foreach($products as $product)
+              <div class="bg-white border border-slate-200 rounded-2xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden">
+
+                <!-- Image -->                <div class="h-80 bg-slate-100 overflow-hidden relative">
+                  <img
+                    src="{{ asset(Storage::url($product->images[0])) }}"
+                    alt="{{ $product->name }}"
+                    class="w-full h-full object-cover hover:scale-105 transition duration-300"
+                  >
+
+                  @if ($product->discount>0)
+                    <span class="absolute top-4 right-0 px-6 text-white bg-red-500 p-2">{{ $product->discount}}%  </span>
+                  @endif
+
+                </div>
+
+                <!-- Content -->
+                <div class="p-5">
+                  <h3 class="text-lg font-bold text-slate-900 mb-2 line-clamp-1">
+                    {{ $product->name }}
+                  </h3>
+
+                  <div class="flex items-baseline gap-3 mb-6">
+                        @if ($product->discount > 0)
+                            <span class=" font-bold text-[var(--color-accent)]">
+                                Rs. {{ number_format($product->price - ($product->discount * $product->price) / 100, 2) }}
+                            </span>
+                            <span class=" text-slate-400 line-through">
+                                Rs. {{ number_format($product->price, 2) }}
+                            </span>
+                            <span class="bg-red-100 text-red-700 px-2 py-0.5 rounded text-sm font-semibold">
+                                Save {{ $product->discount }}%
+                            </span>
+                        @else
+                            <span class="text-3xl font-bold text-[var(--color-accent)]">
+                                Rs. {{ number_format($product->price, 2) }}
+                            </span>
+                        @endif
+                    </div>
+
+                  <p class="text-slate-700/60  font-semibold mb-4">
+                  by  {{ $product->dokan->name }}
+                  </p>
+
+                  
+
+                  <!-- Buttons -->
+                  <div class="flex gap-3">
+                    <a class="w-[50%] text-center bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 rounded-xl transition" href="{{route('product',$product->slug)}}">
+                      <button class="">
+                        View
+                      </button>
+                    </a>
+
+                    <button class="flex-1 border border-slate-300 hover:bg-slate-900 hover:text-white text-slate-700 font-semibold py-2 rounded-xl transition">
+                      Cart
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            @endforeach
+
+          </div>
+
+        </div>
+    </section>
+
   </main>
 </x-frontend-layout>

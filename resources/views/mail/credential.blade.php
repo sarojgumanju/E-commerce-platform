@@ -59,7 +59,7 @@
             </div>
 
             <p style="text-align:center; color:#64748b; font-size:15px;">
-                Or visit: <a href="{{ url('/dokan/login') }}" style="color:#f97316;">{{ url('/dokan/login') }}</a>
+                Or visit: <a href="{{ url('/dokan') }}" style="color:#f97316;">{{ url('/dokan/login') }}</a>
             </p>
         </div>
 

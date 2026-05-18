@@ -65,5 +65,13 @@ class PageController extends Controller
     
     return redirect()->route('home');
 }
+
+
+    public function dokanRegister(){
+        return view('frontend.dokanRegister');
+    }
+
+
+    
 }
 

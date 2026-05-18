@@ -8,10 +8,10 @@
         <div>
           <h5 class="text-white font-semibold mb-2">Quick Links</h5>
           <ul class="space-y-1 text-sm">
-            <li><a href="#">Home</a></li>
+            <li><a href="{{route('home')}}">Home</a></li>
             <li><a href="#">Categories</a></li>
-            <li><a href="#">Shop</a></li>
-            <li><a href="#">Deals</a></li>
+            <li><a href="{{route('products')}}">Shop</a></li>
+            <li><a href="{{route('deals')}}">Deals</a></li>
           </ul>
         </div>
         <div>
@@ -26,9 +26,9 @@
         <div>
           <h5 class="text-white font-semibold mb-2">Stay Connected</h5>
           <div class="flex gap-3 text-xl">
-            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href=""><i class="fab fa-facebook"></i></a>
             <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-x"></i></a>
           </div>
         </div>
       </div>

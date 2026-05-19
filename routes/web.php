@@ -3,6 +3,7 @@
 
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\AuthController;
+use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\PageController;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +34,12 @@ Route::middleware('auth')->group(function(){
     Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
     Route::put('/cart/update/{cartId}', [CartController::class, 'updateCart'])->name('cart.update');
     Route::delete('/cart/remove/{cartId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-    Route::post('/cart/checkout/{dokanId}', [CartController::class, 'checkoutDokan'])->name('cart.checkout.dokan');
+    Route::delete('cart/removeAll', [CartController::class, 'clearAllCart'])->name('clearAllCart');
+    Route::delete('/cart/clearDokanCart/{dokanId}', [CartController::class, 'clearDokanCart'])->name('clearDokanCart');
 
-});
+    Route::post('/cart/checkout/{dokanId}', [OrderController::class, 'checkoutDokan'])->name('cart.checkout.dokan');
+    Route::get('/order/history', [OrderController::class, 'orderHistory'])->name('order.history');
+    Route::get('/khalti/callback', [OrderController::class, 'callback'])->name('khalti.callback');
+
+
+}); 

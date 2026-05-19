@@ -165,8 +165,20 @@
                                             <span class="text-sm text-gray-500">({{ $group['item_count'] }} items)</span>
                                         </div>
                                     </div>
+
+                                    <div>
+                                        <form action="{{ route('clearDokanCart', $item->dokan_id) }}" method="POST" >
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-black border-2 rounded-md font-bold hover:text-red-500 transition p-2">
+                                                        Clear Cart
+                                                    </button>
+                                        </form>          
+                                    </div>
+
                                     <form action="{{ route('cart.checkout.dokan', $group['dokan']->id) }}" method="POST">
                                         @csrf
+                                        <input type="hidden" name='total_amt' value="{{ number_format($group['subtotal'], 2) }}"   >
                                         <button type="submit" class="btn-primary inline-flex text-lg px-8 py-3" >
                                             <i class="fas fa-credit-card mr-2"></i> Checkout from {{ $group['dokan']->name }}
                                         </button>
@@ -190,13 +202,24 @@
                         </div>
                     </div>
                 </div>
-                
+                 
                 <!-- Continue Shopping Button -->
                 <div class="mt-6 text-center">
                     <a href="{{ route('products') }}" class="inline-flex items-center gap-2 text-[#0b1e33] hover:text-[#f97316] transition font-medium">
                         <i class="fas fa-arrow-left"></i> Continue Shopping
                     </a>
                 </div>
+
+                <div class="flex items-center justify-center mt-[20px]">
+                    <form action="{{ route('clearAllCart') }}" method="POST" >
+                        @csrf
+                        @method('DELETE')
+                            <button type="submit" class="text-black border-2 rounded-md font-bold hover:text-red-500 transition p-2">
+                                Clear All Cart
+                            </button>
+                    </form>          
+                </div>                                               
+                                       
             @endif
         </div>
     </div>

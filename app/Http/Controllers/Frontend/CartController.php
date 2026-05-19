@@ -17,12 +17,12 @@ class CartController extends Controller
     public function index()
     {
         // Get all cart items for the logged-in user with relationships
-        $cartItems = Cart::with(['product', 'dokan'])
+        $cartItems = Cart::with(['product', 'dokan']) //“Fetch cart items along with their related product and dokan information.”
             ->where('user_id', Auth::id())
             ->get();
         
-        // Group cart items by dokan
-        $groupedCarts = $cartItems->groupBy(function($item) {
+        // Group cart items by dokan    
+        $groupedCarts = $cartItems->groupBy(function($item) { //It stores the cart items grouped under each dokan_id.
             return $item->dokan_id;
         });
         
@@ -118,34 +118,23 @@ class CartController extends Controller
         
         return redirect()->route('index')->with('success', 'Item removed from cart!');
     }
-    
-    /**
-     * Checkout for specific dokan
-     */
-    public function checkoutDokan($dokanId)
+
+   public function clearAllCart()
     {
-        $cartItems = Cart::with(['product'])
-            ->where('user_id', Auth::id())
-            ->where('dokan_id', $dokanId)
-            ->get();
-        
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('index')->with('error', 'No items to checkout!');
-        }
-        
-        $dokan = Dokan::findOrFail($dokanId);
-        $subtotal = $cartItems->sum(function($item) {
-            return $item->amount * $item->qty;
-        });
-        
-        // Process checkout logic here
-        // Create order, clear cart items for this dokan, etc.
-        
-        // Clear cart items for this dokan
-        Cart::where('user_id', Auth::id())
-            ->where('dokan_id', $dokanId)
-            ->delete();
-        toast( "Check out successfull from " . $dokan->name . '!', 'success');
-        return redirect()->route('index')->with('success', 'Check out successfully from ' . $dokan->name . '!');
+        Cart::where('user_id', Auth::id())->delete();
+
+        return redirect()->route('index')
+            ->with('success', 'Cart cleared successfully!');
     }
+
+    public function clearDokanCart($dokanId)
+        {
+            Cart::where('user_id', Auth::id())
+                ->where('dokan_id', $dokanId)
+                ->delete();
+
+            return redirect()->route('index')->with('success', 'Dokan cart cleared successfully!');
+        }
+    
+   
 }

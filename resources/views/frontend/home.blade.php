@@ -89,9 +89,18 @@
                                        class="flex-1 text-center bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 rounded-lg transition">
                                         View Details
                                     </a>
-                                    <button class="p-2 border border-gray-300 rounded-lg hover:bg-emerald-600 hover:border-emerald-600 hover:text-white transition group">
+                                    
+                                     <form action="{{ route('cart.add') }}" method="POST">
+                                    @csrf
+
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <input type="hidden" name="qty" value="1">
+
+                                    <button type="submit" class="p-2 border border-gray-300 rounded-lg hover:bg-emerald-600 hover:border-emerald-600 hover:text-white transition group"
+                                        >
                                         <i class="fas fa-shopping-cart"></i>
                                     </button>
+                                </form>
                                 </div>
                             </div>
                         </div>

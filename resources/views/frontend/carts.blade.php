@@ -36,7 +36,7 @@
                     </div>
                     <h3 class="text-2xl font-semibold text-[#0f172a] mb-3">Your cart is empty!</h3>
                     <p class="text-[#475569] mb-8">Looks like you haven't added any items to your cart yet.</p>
-                    <a href="#" class="btn-primary inline-flex">
+                    <a href="{{route('products')}}" class="btn-primary inline-flex">
                         <i class="fas fa-store mr-2"></i> Start Shopping
                     </a>
                 </div>
@@ -60,13 +60,13 @@
                                             <span class="text-[#475569]">
                                                 <i class="fas fa-phone mr-1"></i> {{ $group['dokan']->contact_no }}
                                             </span>
-                                            <span class="px-2 py-1 rounded-full text-xs font-medium 
+                                            {{-- <span class="px-2 py-1 rounded-full text-xs font-medium 
                                                 @if($group['dokan']->status == 'approved') bg-green-100 text-green-700
                                                 @elseif($group['dokan']->status == 'pending') bg-yellow-100 text-yellow-700
                                                 @else bg-red-100 text-red-700 @endif">
                                                 <i class="fas fa-circle mr-1 text-xs"></i>
                                                 {{ ucfirst($group['dokan']->status) }}
-                                            </span>
+                                            </span> --}}
                                         </div>
                                     </div>
                                     <div class="text-right">
@@ -119,12 +119,12 @@
                                                     @csrf
                                                     @method('PUT')
                                                     <div class="flex items-center justify-between border border-gray-200 rounded-lg overflow-hidden">
-                                                        <button type="button" class="qty-decrease px-3 py-2 bg-gray-50 hover:bg-gray-100 transition" data-input="qty_{{ $item->id }}">
+                                                        <button type="button" class="qty-decrease hover:bg-gray-300 px-2  py-2 bg-gray-50  transition" data-input="qty_{{ $item->id }}">
                                                             <i class="fas fa-minus text-xs"></i>
                                                         </button>
                                                         <input type="number" name="qty" id="qty_{{ $item->id }}" value="{{ $item->qty }}" min="1" 
                                                                class="w-14 text-center border-0 focus:ring-0 p-2 text-sm">
-                                                        <button type="button" class="qty-increase px-3 py-2 bg-gray-50 hover:bg-gray-100 transition" data-input="qty_{{ $item->id }}">
+                                                        <button type="button" onclick="" class="qty-increase hover:bg-gray-300 px-2 py-2 bg-gray-50  transition" data-input="qty_{{ $item->id }}">
                                                             <i class="fas fa-plus text-xs"></i>
                                                         </button>
                                                     </div>
@@ -167,7 +167,7 @@
                                     </div>
                                     <form action="{{ route('cart.checkout.dokan', $group['dokan']->id) }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn-primary inline-flex text-lg px-8 py-3" onclick="return confirm('Proceed to checkout from {{ $group['dokan']->name }}?')">
+                                        <button type="submit" class="btn-primary inline-flex text-lg px-8 py-3" >
                                             <i class="fas fa-credit-card mr-2"></i> Checkout from {{ $group['dokan']->name }}
                                         </button>
                                     </form>
@@ -202,6 +202,33 @@
     </div>
 
   
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            document.querySelectorAll('.qty-decrease').forEach(button => {
+                button.addEventListener('click', function () {
+                    const inputId = this.getAttribute('data-input');
+                    const input = document.getElementById(inputId);
+
+                    if (input && input.value > 1) {
+                        input.value = parseInt(input.value) - 1;
+                    }
+                });
+            });
+
+            document.querySelectorAll('.qty-increase').forEach(button => {
+                button.addEventListener('click', function () {
+                    const inputId = this.getAttribute('data-input');
+                    const input = document.getElementById(inputId);
+
+                    if (input) {
+                        input.value = parseInt(input.value) + 1;
+                    }
+                });
+            });
+
+        });
+    </script>
 
     <style>
         /* Additional custom styles to complement Tailwind */
@@ -249,4 +276,5 @@
             transform: translateY(-2px);
         }
     </style>
+
 </x-frontend-layout>

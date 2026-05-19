@@ -108,10 +108,10 @@ class CartController extends Controller
     /**
      * Remove item from cart
      */
-    public function removeFromCart($cartId)
+    public function removeFromCart($productId)
     {
         $cartItem = Cart::where('user_id', Auth::id())
-            ->where('id', $cartId)
+            ->where('id', $productId)
             ->firstOrFail();
         
         $cartItem->delete();
@@ -130,7 +130,7 @@ class CartController extends Controller
             ->get();
         
         if ($cartItems->isEmpty()) {
-            return redirect()->route('frontend.carts')->with('error', 'No items to checkout!');
+            return redirect()->route('index')->with('error', 'No items to checkout!');
         }
         
         $dokan = Dokan::findOrFail($dokanId);
@@ -145,7 +145,7 @@ class CartController extends Controller
         Cart::where('user_id', Auth::id())
             ->where('dokan_id', $dokanId)
             ->delete();
-        
-        return redirect()->route('frontend.carts')->with('success', 'Order placed successfully for ' . $dokan->name . '!');
+        toast( "Check out successfull from " . $dokan->name . '!', 'success');
+        return redirect()->route('index')->with('success', 'Check out successfully from ' . $dokan->name . '!');
     }
 }

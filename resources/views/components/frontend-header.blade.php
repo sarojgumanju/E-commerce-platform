@@ -17,7 +17,24 @@
       <!-- Right side icons (search, wishlist, cart, user) -->
       <div class="nav-actions">
         <button class="icon-btn" aria-label="Search"><i class="fas fa-search"></i></button>
-        <button class="icon-btn" aria-label="Cart"><i class="fas fa-shopping-cart"></i><span class="badge">5</span></button>
+
+
+        @php
+
+            $cartCount = $cartGroups ? $cartGroups->sum('item_count') : 0;
+        @endphp
+
+        <a href="{{ route('index') }}" class="icon-btn relative" aria-label="Cart">
+            <i class="fas fa-shopping-cart"></i>
+
+            @if($cartCount > 0)
+                <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                    {{ $cartCount }}
+                </span>
+            @endif
+        </a>
+
+
         @if (!Auth::guard('web')->user())
           <a href="{{route('login')}}" class="bg-(--color-accent)/90 p-2 text-white border hover:bg-(--color-accent) rounded-lg font-bold " aria-label="Account">Sign in</a>
         @else

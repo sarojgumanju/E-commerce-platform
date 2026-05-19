@@ -87,12 +87,18 @@
 
                     {{-- Action Buttons --}}
                     <div class="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-200">
-                        <button class="btn-primary flex-1 justify-center" onclick="addToCart({{ $product->id }})">
-                            <i class="fas fa-shopping-cart"></i> Add to Cart
-                        </button>
-                        <button class="btn-outline flex-1 justify-center" onclick="alert('Wishlist feature coming soon!')">
-                            <i class="far fa-heart"></i> Save to Wishlist
-                        </button>
+                        <form action="{{ route('cart.add') }}" method="POST">
+                                    @csrf
+
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <input type="hidden" name="qty" value="1">
+
+                                    <button type="submit"
+                                        class="p-2 border border-slate-300 hover:bg-[var(--color-accent)] hover:text-white rounded-xl transition">
+                                        Add to cart
+                                    </button>
+                                </form>
+                         
                     </div>
 
                     {{-- Additional Info --}}

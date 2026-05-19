@@ -68,10 +68,17 @@
                                    class="flex-1 text-center bg-[var(--color-accent)] hover:bg-[var(--color-accent)]/80 text-white font-semibold py-2 rounded-xl transition">
                                     View Details
                                 </a>
-                                <button onclick="addToCart({{ $product->id }})" 
-                                        class="w-10 h-10 border border-slate-300 hover:bg-[var(--color-accent)] hover:text-white rounded-xl transition">
-                                    <i class="fas fa-shopping-cart"></i>
-                                </button>
+                                <form action="{{ route('cart.add') }}" method="POST">
+                                    @csrf
+
+                                    <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                    <input type="hidden" name="qty" value="1">
+
+                                    <button type="submit"
+                                        class="p-2 border border-slate-300 hover:bg-[var(--color-accent)] hover:text-white rounded-xl transition">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -88,12 +95,7 @@
 
     </main>
 
-    <script>
-        function addToCart(productId) {
-            alert('Product ' + productId + ' added to cart!');
-            // You can integrate your cart logic here
-        }
-    </script>
+   
 
     <style>
         .decorative-line {

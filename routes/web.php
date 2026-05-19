@@ -1,5 +1,7 @@
 <?php
 
+
+use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Frontend\PageController;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +15,7 @@ Route::get('/products', [PageController::class, 'products'])->name('products');
 Route::get('/deals', [PageController::class, 'deals'])->name('deals');
 Route::get('/dokanRegister', [PageController::class, 'dokanRegister'])->name('dokanRegister');
 
+
 //login routes for guest (who are not logged in)
 Route::middleware('guest')->group(function(){
     Route::get('/login', [AuthController::class, 'login'])->name('login');
@@ -20,8 +23,16 @@ Route::middleware('guest')->group(function(){
     Route::get('/google/callback', [AuthController::class, 'callback'])->name('google.callback');
 });
 
+
 // routes for who are logged in
 Route::middleware('auth')->group(function(){
     Route::delete('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Cart routes
+    Route::get('/index', [CartController::class, 'index'])->name('index');
+    Route::post('/cart/add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::put('/cart/update/{cartId}', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::delete('/cart/remove/{cartId}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/cart/checkout/{dokanId}', [CartController::class, 'checkoutDokan'])->name('cart.checkout.dokan');
 
 });

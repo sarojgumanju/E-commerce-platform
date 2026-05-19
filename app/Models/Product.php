@@ -9,6 +9,12 @@ class Product extends Model
 
     protected $casts = [
         "images" => "array",
+        'price' => 'float',
+        'discount' => 'float'
+    ];
+
+    protected $fillable = [
+        'name', 'slug', 'description', 'images', 'price', 'discount', 'dokan_id'
     ];
 
     public function dokan(){

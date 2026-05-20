@@ -63,7 +63,7 @@ class OrderController extends Controller
             DB::commit();
 
             // Initialize Khalti payment
-            $url = rtrim(config('services.khalti.base_url'), '/') . '/epayment/initiate/';
+            $url = rtrim(config('services.khalti.base_url'). '/') . '/epayment/initiate/';
 
             $response = Http::withHeaders([
                 "Authorization" => "Key " . env('KHALTI_SECRET')

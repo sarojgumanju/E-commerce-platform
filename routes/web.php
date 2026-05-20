@@ -1,5 +1,5 @@
 <?php
-
+ 
 
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\AuthController;

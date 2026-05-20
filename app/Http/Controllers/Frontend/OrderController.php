@@ -122,7 +122,7 @@ class OrderController extends Controller
                         ->where('dokan_id', $order->dokan_id)
                         ->delete();
                     
-                    toast('Payment completed successfully!', 'success');
+                    toast('Order completed successfully!', 'success');
                 } else {
                     // If payment failed, optionally delete the order or mark it as failed
                     // Uncomment the line below if you want to auto-delete failed orders
@@ -142,7 +142,7 @@ class OrderController extends Controller
 
     public function orderHistory(){
         // Only show completed orders or all orders based on your preference
-        $orders = Order::where('user_id', Auth::id())
+        $orders = Order::orderBy('id', 'desc')->where('user_id', Auth::id())
             ->where('payment_status', 'Completed') // Only show completed orders
             // Or use below line to show all orders
             // ->orderBy('created_at', 'desc')

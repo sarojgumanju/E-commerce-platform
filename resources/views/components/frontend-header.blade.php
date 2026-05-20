@@ -8,10 +8,10 @@
       <!-- Navigation links (Home, Categories, Shop, Deals, About, Contact) -->
       <ul class="nav-links">
         <li><a href="{{route('home')}}"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="{{route('dokanRegister')}}"><i class="fas fa-info-circle"></i>Register Dokan </a></li>
+        <li><a href="{{route('dokanRegister')}}"><i class="fa-solid fa-address-card"></i>Register Dokan </a></li>
         <li><a href="{{route('products')}}"><i class="fas fa-store"></i> Shop</a></li>
         <li><a href="{{route('deals')}}"><i class="fas fa-tags"></i> Deals</a></li>
-        <li><a href="#"><i class="fas fa-envelope"></i> Contact</a></li>
+        <li><a href="{{route('order.history')}}"><i class="fa-solid fa-box-archive"></i> Order</a></li>
       </ul>
 
       <!-- Right side icons (search, wishlist, cart, user) -->

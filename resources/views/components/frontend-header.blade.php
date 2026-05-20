@@ -11,7 +11,7 @@
         <li><a href="{{route('dokanRegister')}}"><i class="fa-solid fa-address-card"></i>Register Dokan </a></li>
         <li><a href="{{route('products')}}"><i class="fas fa-store"></i> Shop</a></li>
         <li><a href="{{route('deals')}}"><i class="fas fa-tags"></i> Deals</a></li>
-        <li><a href="{{route('order.history')}}"><i class="fa-solid fa-box-archive"></i> Order</a></li>
+        <li><a href="{{route('order.history')}}"><i class="fa-solid fa-box-archive"></i> Orders</a></li>
       </ul>
 
       <!-- Right side icons (search, wishlist, cart, user) -->

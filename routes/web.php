@@ -5,6 +5,7 @@ use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Frontend\AuthController;
 use App\Http\Controllers\Frontend\OrderController;
 use App\Http\Controllers\Frontend\PageController;
+use App\Http\Controllers\Frontend\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -40,6 +41,19 @@ Route::middleware('auth')->group(function(){
     Route::post('/cart/checkout/{dokanId}', [OrderController::class, 'checkoutDokan'])->name('cart.checkout.dokan');
     Route::get('/order/history', [OrderController::class, 'orderHistory'])->name('order.history');
     Route::get('/khalti/callback', [OrderController::class, 'callback'])->name('khalti.callback');
+    Route::get('/dokan/order/details/{record}', [OrderController::class, 'dokan_order'])->name('dokan.order.details');
+
+});
 
 
-}); 
+
+Route::middleware('auth')->group(function () {
+
+    // show review form
+    Route::get('/product/{product}/review/create', [ReviewController::class, 'create'])
+        ->name('reviews.create');
+
+    // store review
+    Route::post('/product/{product}/review', [ReviewController::class, 'store'])
+        ->name('reviews.store');
+});

@@ -26,9 +26,7 @@ class OrderController extends Controller
                 ->latest()
                 ->first();
             
-            // If pending order exists, use it instead of creating new one
             if($existingOrder) {
-                // Delete existing order items if any
                 $existingOrder->items()->delete();
                 $order = $existingOrder;
             } else {
@@ -55,52 +53,70 @@ class OrderController extends Controller
                 $data->save();
             }
 
-            // Don't delete cart yet - only delete after successful payment
-            // Cart::where('user_id', Auth::id())
-            //     ->where('dokan_id', $id)
-            //     ->delete();
-
             DB::commit();
 
-            // Initialize Khalti payment
-            $url = rtrim(config('services.khalti.base_url'). '/') . '/epayment/initiate/';
+            // Build URL - Your base_url already contains /api/v2
+            $baseUrl = rtrim(config('services.khalti.base_url'), '/');
+            $url = $baseUrl . '/epayment/initiate/';
+            
+            // Log for debugging
+            Log::info('Khalti Request:', [
+                'url' => $url,
+                'secret_key_exists' => !empty(config('services.khalti.secret')),
+                'amount' => (int)($order->total_amount * 100)
+            ]);
 
+            // Make sure you're using 'secret' not 'secret_key' as per your config
             $response = Http::withHeaders([
-                "Authorization" => "Key " . env('KHALTI_SECRET')
+                'Authorization' => 'Key ' . config('services.khalti.secret')
             ])->post($url, [
-                'return_url'          => route('khalti.callback'),
-                'website_url'         => env('APP_URL'),
-                'amount'              => (int)($order->total_amount * 100),
-                'purchase_order_id'   => $order->id,
+                'return_url' => route('khalti.callback'),
+                'website_url' => env('APP_URL'),
+                'amount' => (int)($order->total_amount * 100),
+                'purchase_order_id' => $order->id,
                 'purchase_order_name' => "Order #" . $order->id,
             ]);
 
-            // Check if the request was successful
-            if ($response->successful() && isset($response['payment_url'])) {
-                return redirect($response['payment_url']);
+            // Check response
+            if ($response->successful()) {
+                $responseData = $response->json();
+                
+                if (isset($responseData['payment_url'])) {
+                    Log::info('Khalti Success:', ['payment_url' => $responseData['payment_url']]);
+                    return redirect($responseData['payment_url']);
+                } else {
+                    Log::error('Khalti Response missing payment_url:', $responseData);
+                    toast('Invalid response from payment gateway', 'error');
+                    return redirect()->back();
+                }
             } else {
-                // Log the error
-                Log::error('Khalti Payment Error:', [
+                // Log full error response
+                Log::error('Khalti API Error:', [
                     'status' => $response->status(),
                     'body' => $response->body(),
-                    'order_id' => $order->id
+                    'headers' => $response->headers()
                 ]);
                 
-                // Delete the pending order since payment failed
+                // Delete the pending order
                 DB::beginTransaction();
                 $order->items()->delete();
                 $order->delete();
                 DB::commit();
                 
-                toast('Payment initialization failed! Please try again.', 'error');
+                // Parse error message
+                $errorBody = $response->json();
+                $errorMsg = $errorBody['detail'] ?? $errorBody['error'] ?? $errorBody['message'] ?? 'Payment initialization failed! Please try again.';
+                
+                toast($errorMsg, 'error');
                 return redirect()->back();
             }
 
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Checkout Error:', [
+            Log::error('Checkout Exception:', [
                 'message' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
             ]);
             toast('Order placement failed: ' . $e->getMessage(), 'error');
             return redirect()->back();
@@ -109,6 +125,8 @@ class OrderController extends Controller
 
     public function callback(Request $req){
         try {
+            Log::info('Khalti Callback Received:', $req->all());
+            
             $order = Order::find($req["purchase_order_id"]);
             if($order) {
                 // Update payment status
@@ -117,20 +135,17 @@ class OrderController extends Controller
                 
                 // Only delete cart if payment is successful
                 if($req['status'] == 'Completed' || $req['status'] == 'complete') {
-                    // Delete cart items for this dokan
                     Cart::where('user_id', $order->user_id)
                         ->where('dokan_id', $order->dokan_id)
                         ->delete();
                     
                     toast('Order completed successfully!', 'success');
                 } else {
-                    // If payment failed, optionally delete the order or mark it as failed
-                    // Uncomment the line below if you want to auto-delete failed orders
-                    // $order->delete();
                     toast('Payment ' . $req['status'] . '. Please try again.', 'error');
                 }
             } else {
                 toast('Order not found!', 'error');
+                Log::error('Order not found in callback:', ['order_id' => $req["purchase_order_id"]]);
             }
         } catch (\Exception $e) {
             Log::error('Callback Error:', ['message' => $e->getMessage()]);
@@ -141,15 +156,33 @@ class OrderController extends Controller
     }
 
     public function orderHistory(){
-        // Only show completed orders or all orders based on your preference
-        $orders = Order::orderBy('id', 'desc')->where('user_id', Auth::id())
-            ->where('payment_status', 'Completed') // Only show completed orders
-            // Or use below line to show all orders
-            // ->orderBy('created_at', 'desc')
+        $orders = Order::orderBy('id', 'desc')
+            ->where('user_id', Auth::id())
+            ->where('payment_status', 'Completed')
             ->with(['items.product'])
             ->orderBy('created_at', 'desc')
             ->get();
         
         return view('frontend.order_history', compact('orders'));
     }
+
+    public function dokan_order($record){
+        $order = Order::find($record);
+        return view('frontend.dokan_order', compact('order'));
+    }
+
+    // Add this method for sending email receipts
+    // public function sendInvoiceEmail($id)
+    // {
+    //     $order = Order::findOrFail($id);
+        
+    //     // Add your email sending logic here
+    //     // Mail::to($order->user->email)->send(new OrderReceiptMail($order));
+        
+    //     return response()->json([
+    //         'success' => true,
+    //         'message' => 'Receipt sent successfully'
+    //     ]);
+    // }
+    
 }
